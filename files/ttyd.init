@@ -7,8 +7,7 @@ USE_PROCD=1
 NAME=ttyd
 PROG=/usr/bin/$NAME
 
-validate_section_ttyd()
-{
+validate_section_ttyd() {
 	uci_load_validate ttyd ttyd "$1" "$2" \
 		'enable:bool:1' \
 		'port:port' \
@@ -34,8 +33,7 @@ validate_section_ttyd()
 		'command:string'
 }
 
-ttyd_instance()
-{
+ttyd_instance() {
 	[ "$2" = 0 ] || {
 		echo "validation failed"
 		return 1
@@ -62,7 +60,7 @@ ttyd_instance()
 	procd_open_instance
 	procd_set_param command "$PROG" \
 		${port:+-p $port} \
-		# ${interface:+-i $interface} \
+		\
 		${credential:+-c $credential} \
 		${uid:+-u $uid} \
 		${gid:+-g $gid} \
@@ -79,7 +77,7 @@ ttyd_instance()
 		${ssl_cert:+-C $ssl_cert} \
 		${ssl_key:+-K $ssl_key} \
 		${ssl_ca:+-A $ssl_ca} \
-		${debug:+-d $debug}
+		${debug:+-d $debug} # ${interface:+-i $interface} \
 	config_list_foreach "$1" client_option "procd_append_param command -t"
 	procd_append_param command $command
 	procd_set_param stdout 1
